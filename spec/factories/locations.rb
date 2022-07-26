@@ -6,4 +6,14 @@ FactoryBot.define do
     description { Faker::Lorem.paragraph }
     ancestry { nil }
   end
+
+  factory :zone, parent: :location, class: 'Location' do
+    location_type { Location::ZONE }
+    parent factory: :location
+  end
+
+  factory :woreda, parent: :location, class: 'Location' do
+    location_type { Location::WOREDA }
+    parent factory: :zone
+  end
 end
