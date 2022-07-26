@@ -8,8 +8,8 @@ VALIDATIONS = {
 }.freeze
 
 
-Rspec.shared_examples 'model_shared_spec' do |factory, attribs, subj = false|
-    subject { create(:factory) } unless subj
+RSpec.shared_examples 'model_shared_spec' do |factory, attribs, subj = false|
+    subject { create(factory) } unless subj
 
     it 'has a valid factory' do
         expect(create(factory)).to be_valid
@@ -19,7 +19,12 @@ Rspec.shared_examples 'model_shared_spec' do |factory, attribs, subj = false|
         attr.each do |k,v|
             if v.instance_of?(Array)
                 v.each do |validation|
-                    it { is_expected.to(send(VALIDATIONS[validation], k))}
+                    if validation == :uniqueness
+                        it { is_expected.to(send(VALIDATIONS[validation], k).case_insensitive)}
+                    else
+                        it { is_expected.to(send(VALIDATIONS[validation], k))}
+                    end
+                        
                 end
             else
                 it { is_expected.to(send(VALIDATIONS[v], k))}

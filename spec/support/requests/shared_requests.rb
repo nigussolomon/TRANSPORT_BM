@@ -1,4 +1,4 @@
-Rspec.shared_examples 'request_shared_spec' do |controller, field_count, excluded = []|
+RSpec.shared_examples 'request_shared_spec' do |controller, field_count, excluded = []|
     include routes.url_helpers
 
     let(:factory) { controller.classify.underscore.to_sym }
@@ -23,7 +23,7 @@ Rspec.shared_examples 'request_shared_spec' do |controller, field_count, exclude
         describe "GET /show" do
             it 'renders success response' do
                 obj = create(factory)
-                get(send("#{controller.singularize}_url", obj)), as: :json
+                get(send("#{controller.singularize}_url", obj),as: :json)
                 expect(response).to be_succesful
                 result = JSON(response.body)
                 
@@ -62,7 +62,7 @@ Rspec.shared_examples 'request_shared_spec' do |controller, field_count, exclude
                         send("#{controller}_url"),
                         params: params,
                         as: :json
-                    )end.to change(clazz, :count).by(0)
+                    )
                     expect(response).to have_http_status(:unprocessable_entity)
                     expect(response.content_type).to eq ('application/json')
 
