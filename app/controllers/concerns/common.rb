@@ -4,69 +4,65 @@ module Common
     included do
         before_action :set_clazz
         before_action :set_object, only: %i[show update]
-    end
+      end
 
-    def index
+      def index
         data = if block_given?
-                    yield
-                else
-                    @clazz.all
-                end
-        render json: {success: true, data: serialize(data)}
-    end
+                 yield
+               else
+                 @clazz.all
+               end
+        render json: { success: true, data: serialize(data) }
+      end
 
-    
-    def show
-        render json: {success: true, data: serialize(@obj)}
-    end
+      def show
+        render json: { success: true, data: serialize(@obj) }
+      end
 
-    def create
+      def create
         obj = if block_given?
                 yield
               else
                 @clazz.new(model_params)
               end
-
         if obj.save
-            render json: { success: true, data: serialize(obj)}, status: :created
+          render json: { success: true, data: serialize(obj) }, status: :created
         else
-            render json: { success: false, error: obj.errors.full_message[0] }, status: :unprocessable_entity
+          render json: { success: false, error: obj.errors.full_messages[0] }, status: :unprocessable_entity
         end
-
-    rescue StandardError => e
+      rescue StandardError => e
         render json: { success: false, error: e.message }
+      end
 
-    
-
-    def update
+      def update
         obj = if block_given?
                 yield
               else
                 obj = @obj
               end
         if obj.update(model_params)
-            render json: { success: true, data: serialize(obj) }, status: :ok
+          render json: { success: true, data: serialize(obj) }
         else
-            render json: { success: false, error: obj.errors.full_message[0] }, status: :unprocessable_entity
+          render json: { success: false, error: obj.errors.full_messages[0] }, status: :unprocessable_entity
         end
-
-    rescue StandardError => e
+      rescue StandardError => e
         render json: { success: false, error: e.message }
-    end
+      end
 
-    private
+      private
 
-    def serialize(data)
+      def serialize(data)
         ActiveModelSerializers::SerializableResource.new(data)
-    end
+      end
 
-    def set_clazz
+      def set_clazz
         @clazz = "#{controller_name.classify}".constantize
-    end
+      end
 
-    def set_object
+      def set_object
         @obj = @clazz.find(params[:id])
-    end
+      end
 
-    def model_params; end
+      # This class should be overridden by respective child controllers
+      def model_params; end
 end
